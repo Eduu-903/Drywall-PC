@@ -1,0 +1,389 @@
+<!doctype html>
+<!--
+  DrywallPC - site base do projeto (Expotech 2026, UniFECAF)
+
+  Como editar:
+  - Tudo que aparece com fundo amarelo e entre [colchetes] (classe "preencher")
+    ainda precisa ser preenchido pelo grupo. Troque o texto e apague a classe.
+  - Fotos: troque cada <div class="foto">...</div> por
+    <img src="fotos/nome-da-foto.jpg" alt="descrição da foto">
+    e coloque as imagens numa pasta "fotos" ao lado deste arquivo.
+  - Status do diário: use as classes "ok" (concluído), "andando" (em andamento)
+    ou "fazer" (a fazer) no <span class="status">.
+  - Para publicar: copie este arquivo (e a pasta fotos) para a pasta do site
+    no IIS (normalmente C:\inetpub\wwwroot) e publique com o ngrok.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DrywallPC</title>
+<meta name="description" content="DrywallPC: um computador construído dentro de uma parede de drywall. Projeto semestral da turma CDC2NA, UniFECAF, Expotech 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gesso: #DEDDD8;
+    --gesso-claro: #ECEBE7;
+    --placa: #FFFFFF;
+    --grafite: #23252A;
+    --concreto: #5F605C;
+    --linha: #B4B3AD;
+    --sinal: #FFC20E;
+    --sinal-claro: #FFE58A;
+    --fita: repeating-linear-gradient(-45deg, var(--sinal) 0 16px, var(--grafite) 16px 32px);
+    --titulo: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --texto: "Barlow", "Segoe UI", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--gesso);
+    color: var(--grafite);
+    font-family: var(--texto);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  a { color: var(--grafite); }
+  a:focus-visible, summary:focus-visible { outline: 3px solid var(--grafite); outline-offset: 3px; }
+  img { max-width: 100%; display: block; }
+
+  .fita { height: 14px; background: var(--fita); }
+
+  .topo {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--grafite); color: var(--placa);
+  }
+  .topo-in {
+    max-width: 1040px; margin: 0 auto; padding: 10px 20px;
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+  .marca { font-family: var(--titulo); font-weight: 700; font-size: 24px; letter-spacing: .02em; color: var(--sinal); text-decoration: none; }
+  .topo nav { display: flex; gap: 18px; flex-wrap: wrap; }
+  .topo nav a { color: var(--placa); text-decoration: none; font-weight: 500; font-size: 15px; }
+  .topo nav a:hover { color: var(--sinal); }
+  .topo nav a:focus-visible { outline-color: var(--sinal); }
+
+  main { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+  .hero {
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px;
+    align-items: start; padding: 56px 0 64px;
+  }
+  .hero h1 {
+    font-family: var(--titulo); font-weight: 700;
+    font-size: clamp(64px, 12vw, 128px); line-height: .88;
+    margin: 0 0 20px; letter-spacing: -.01em;
+  }
+  .lead { font-size: 21px; line-height: 1.5; max-width: 30ch; margin: 0 0 28px; }
+  .servidor {
+    border-left: 6px solid var(--sinal); background: var(--placa);
+    padding: 14px 18px; max-width: 46ch;
+  }
+  .servidor p { margin: 0; }
+  .servidor .forte { font-weight: 600; }
+  .servidor .host { margin-top: 6px; font-size: 15px; color: var(--concreto); }
+  .servidor .host span { color: var(--grafite); font-weight: 500; overflow-wrap: anywhere; }
+
+  .placa-obra { background: var(--fita); padding: 12px; }
+  .placa-obra-in { background: var(--placa); border: 3px solid var(--grafite); }
+  .placa-obra h2 {
+    margin: 0; padding: 10px 18px; background: var(--sinal);
+    font-family: var(--titulo); font-weight: 700; font-size: 26px;
+    border-bottom: 3px solid var(--grafite);
+  }
+  .placa-obra dl { margin: 0; }
+  .placa-obra .campo { padding: 10px 18px; border-bottom: 1px solid var(--linha); }
+  .placa-obra .campo:last-child { border-bottom: 0; }
+  .placa-obra dt { font-size: 13px; color: var(--concreto); }
+  .placa-obra dd { margin: 0; font-weight: 500; }
+
+  .preencher { background: var(--sinal-claro); padding: 0 4px; }
+
+  section.bloco { padding: 56px 0; border-top: 2px solid var(--grafite); }
+  section.bloco > h2 {
+    font-family: var(--titulo); font-weight: 700;
+    font-size: clamp(36px, 6vw, 52px); line-height: 1; margin: 0 0 12px;
+  }
+  .intro { max-width: 62ch; margin: 0 0 32px; color: var(--concreto); font-size: 18px; }
+
+  .diario { list-style: none; margin: 0; padding: 0; counter-reset: etapa; }
+  .diario li {
+    counter-increment: etapa;
+    display: grid; grid-template-columns: 64px 1fr 220px; gap: 20px;
+    padding: 20px 0; border-bottom: 1px solid var(--linha); align-items: start;
+  }
+  .diario li::before {
+    content: counter(etapa);
+    font-family: var(--titulo); font-weight: 700; font-size: 44px; line-height: 1;
+  }
+  .diario h3 { font-family: var(--titulo); font-weight: 600; font-size: 26px; margin: 0 0 4px; line-height: 1.1; }
+  .diario p { margin: 4px 0 0; max-width: 54ch; }
+  .meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 15px; color: var(--concreto); }
+  .status { font-size: 13px; font-weight: 600; padding: 2px 10px; border: 2px solid var(--grafite); }
+  .status.ok { background: var(--grafite); color: var(--placa); }
+  .status.andando { background: var(--sinal); }
+  .status.fazer { background: transparent; }
+
+  .foto {
+    aspect-ratio: 4 / 3; border: 2px dashed var(--linha); background: var(--gesso-claro);
+    display: grid; place-items: center; text-align: center; padding: 10px;
+    font-size: 14px; color: var(--concreto);
+  }
+
+  .ficha { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 40px; margin: 0; }
+  .ficha .item { padding: 16px 0; border-bottom: 1px solid var(--linha); }
+  .ficha dt { font-family: var(--titulo); font-weight: 600; font-size: 22px; line-height: 1.2; }
+  .ficha dd { margin: 4px 0 0; }
+  .ficha .porque { display: block; color: var(--concreto); font-size: 15px; margin-top: 2px; }
+
+  .planta { border: 2px dashed var(--grafite); padding: 20px; background: var(--gesso-claro); }
+  .planta-titulo { font-family: var(--titulo); font-weight: 700; font-size: 24px; margin: 0; }
+  .planta-sub { margin: 0 0 18px; color: var(--concreto); font-size: 15px; }
+  .vms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .vm { background: var(--placa); border: 2px solid var(--grafite); padding: 16px; }
+  .vm.ataque { border-top: 8px solid var(--sinal); }
+  .vm h3 { font-family: var(--titulo); font-weight: 600; font-size: 24px; margin: 0; }
+  .vm .ram { font-size: 14px; color: var(--concreto); margin: 0 0 8px; }
+  .vm p { margin: 0; font-size: 16px; }
+  .fora { margin: 18px 0 0; max-width: 62ch; }
+
+  .passos { list-style: none; margin: 0 0 28px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; counter-reset: passo; }
+  .passos li { counter-increment: passo; padding: 18px 20px 18px 0; border-top: 6px solid var(--grafite); }
+  .passos li + li { padding-left: 20px; border-left: 1px solid var(--linha); }
+  .passos li:first-child { border-top-color: var(--sinal); }
+  .passos h3 { font-family: var(--titulo); font-weight: 600; font-size: 24px; margin: 0 0 4px; }
+  .passos h3::before { content: counter(passo) ". "; }
+  .passos p { margin: 0; }
+  .aviso { max-width: 62ch; font-size: 15px; color: var(--concreto); }
+  .seg-foto { max-width: 520px; }
+
+  .equipe { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 40px; }
+  .equipe li { padding: 16px 0; border-bottom: 1px solid var(--linha); }
+  .equipe .nome { font-family: var(--titulo); font-weight: 600; font-size: 24px; line-height: 1.2; display: block; }
+  .equipe .frente { color: var(--concreto); }
+  .disciplinas { margin-top: 28px; max-width: 62ch; }
+
+  footer { background: var(--grafite); color: var(--placa); margin-top: 24px; }
+  .rodape { max-width: 1040px; margin: 0 auto; padding: 28px 20px 36px; }
+  .rodape p { margin: 0; }
+  .rodape .frase { font-family: var(--titulo); font-weight: 600; font-size: 24px; color: var(--sinal); margin-bottom: 6px; }
+
+  @media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 36px; }
+    .diario li { grid-template-columns: 44px 1fr; }
+    .diario li::before { font-size: 36px; }
+    .diario .foto { grid-column: 2; }
+    .ficha, .equipe { grid-template-columns: 1fr; }
+    .vms { grid-template-columns: 1fr; }
+    .passos { grid-template-columns: 1fr; }
+    .passos li + li { padding-left: 0; border-left: 0; }
+  }
+  @media (max-width: 520px) {
+    body { font-size: 16px; }
+    .topo { position: static; }
+    .topo nav { gap: 12px; }
+    .topo nav a { font-size: 14px; }
+    .lead { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fita" aria-hidden="true"></div>
+<header class="topo">
+  <div class="topo-in">
+    <a class="marca" href="#inicio">DrywallPC</a>
+    <nav aria-label="Seções">
+      <a href="#diario">Diário de obra</a>
+      <a href="#parede">A parede</a>
+      <a href="#hardware">Hardware</a>
+      <a href="#infra">Infraestrutura</a>
+      <a href="#seguranca">Segurança</a>
+      <a href="#equipe">Equipe</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+
+  <div class="hero">
+    <div>
+      <h1>DrywallPC</h1>
+      <p class="lead">Um computador construído dentro de uma parede de drywall, rodando servidores, monitoramento de segurança e este próprio site.</p>
+      <div class="servidor">
+        <p class="forte">Você está lendo esta página direto do computador que está dentro da parede.</p>
+        <p class="host">Endereço acessado: <span id="host">carregando…</span></p>
+      </div>
+    </div>
+
+    <aside class="placa-obra" aria-labelledby="placa-titulo">
+      <div class="placa-obra-in">
+        <h2 id="placa-titulo">Placa de obra</h2>
+        <dl>
+          <div class="campo"><dt>Obra</dt><dd>Casemod DrywallPC</dd></div>
+          <div class="campo"><dt>Local</dt><dd>UniFECAF, Taboão da Serra, Expotech 2026</dd></div>
+          <div class="campo"><dt>Responsáveis</dt><dd>Turma CDC2NA, grupo de quatro alunos</dd></div>
+          <div class="campo"><dt>Início da obra</dt><dd>28/10/2026</dd></div>
+          <div class="campo"><dt>Entrega prevista</dt><dd><span class="preencher">[data da Expotech]</span></dd></div>
+          <div class="campo"><dt>Situação</dt><dd>Em construção</dd></div>
+        </dl>
+      </div>
+    </aside>
+  </div>
+
+  <section class="bloco" id="diario" aria-labelledby="diario-titulo">
+    <h2 id="diario-titulo">Diário de obra</h2>
+    <p class="intro">Cada etapa da construção, da primeira reunião até o servidor ligado. Fotos e datas são atualizadas conforme a obra avança.</p>
+    <ol class="diario">
+      <li>
+        <div>
+          <h3>Planejamento</h3>
+          <div class="meta"><span>28/10/2026</span><span class="status ok">Concluído</span></div>
+          <p>Definição do projeto da parede e divisão do grupo em quatro frentes: estrutura e site, hardware, servidores e rede, segurança.</p>
+        </div>
+        <div class="foto">Foto ou esboço do planejamento</div>
+      </li>
+      <li>
+        <div>
+          <h3>Compra das peças</h3>
+          <div class="meta"><span class="preencher">[data]</span><span class="status fazer">A fazer</span></div>
+          <p>Kit com processador, placa-mãe micro-ATX e 16&nbsp;GB de RAM, além de SSD, fonte e duas fans de 120&nbsp;mm.</p>
+        </div>
+        <div class="foto">Foto das peças</div>
+      </li>
+      <li>
+        <div>
+          <h3>Estrutura metálica</h3>
+          <div class="meta"><span class="preencher">[data]</span><span class="status fazer">A fazer</span></div>
+          <p>Montagem do quadro com guias e montantes de aço galvanizado de 70&nbsp;mm, sobre uma base com mãos-francesas.</p>
+        </div>
+        <div class="foto">Foto do quadro montado</div>
+      </li>
+      <li>
+        <div>
+          <h3>Fechamento e acabamento</h3>
+          <div class="meta"><span class="preencher">[data]</span><span class="status fazer">A fazer</span></div>
+          <p>Placa de drywall, recorte da janela, acrílico, grades de ventilação e acabamento com fita e massa.</p>
+        </div>
+        <div class="foto">Foto da parede fechada</div>
+      </li>
+      <li>
+        <div>
+          <h3>Montagem do hardware</h3>
+          <div class="meta"><span class="preencher">[data]</span><span class="status fazer">A fazer</span></div>
+          <p>Placa-mãe fixada no fundo de MDF com espaçadores, fonte, fans e organização dos cabos.</p>
+        </div>
+        <div class="foto">Foto do hardware pela janela</div>
+      </li>
+      <li>
+        <div>
+          <h3>Servidores no ar</h3>
+          <div class="meta"><span class="preencher">[data]</span><span class="status fazer">A fazer</span></div>
+          <p>Máquinas virtuais configuradas, este site hospedado no IIS e publicado com o ngrok, Wazuh monitorando.</p>
+        </div>
+        <div class="foto">Print das VMs rodando</div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="bloco" id="parede" aria-labelledby="parede-titulo">
+    <h2 id="parede-titulo">A parede</h2>
+    <p class="intro">Um painel de drywall portátil, montado com os mesmos materiais e técnicas de uma parede de verdade, com uma janela para ver o computador funcionando.</p>
+    <dl class="ficha">
+      <div class="item"><dt>Dimensões</dt><dd>1,00&nbsp;m de largura por 1,20&nbsp;m de altura</dd></div>
+      <div class="item"><dt>Quadro</dt><dd>Guias e montantes de aço galvanizado de 70&nbsp;mm<span class="porque">A largura de 70&nbsp;mm deixa espaço para o cooler, os cabos e a passagem de ar.</span></dd></div>
+      <div class="item"><dt>Fechamento</dt><dd>Placa de drywall de 12,5&nbsp;mm</dd></div>
+      <div class="item"><dt>Janela</dt><dd>Acrílico transparente<span class="porque">Mostra o hardware sem expor as peças ao toque.</span></dd></div>
+      <div class="item"><dt>Fundo</dt><dd>Chapa de MDF onde o hardware é parafusado<span class="porque">A placa-mãe fica sobre espaçadores e nunca encosta no gesso.</span></dd></div>
+      <div class="item"><dt>Ventilação</dt><dd>Entrada de ar embaixo e saída em cima, com duas fans de 120&nbsp;mm<span class="porque">O ar frio sobe pelas peças e o ar quente sai pelo topo.</span></dd></div>
+    </dl>
+  </section>
+
+  <section class="bloco" id="hardware" aria-labelledby="hardware-titulo">
+    <h2 id="hardware-titulo">Hardware</h2>
+    <p class="intro">As peças que ficam dentro da parede e por que cada uma foi escolhida.</p>
+    <dl class="ficha">
+      <div class="item"><dt>Processador</dt><dd><span class="preencher">[modelo]</span><span class="porque">Precisa ter suporte a virtualização (VT-x) para rodar as máquinas virtuais.</span></dd></div>
+      <div class="item"><dt>Placa-mãe</dt><dd><span class="preencher">[modelo]</span>, formato micro-ATX<span class="porque">Formato compacto, cabe no painel com folga.</span></dd></div>
+      <div class="item"><dt>Memória</dt><dd>16&nbsp;GB DDR3<span class="porque">Suficiente para três máquinas virtuais ao mesmo tempo.</span></dd></div>
+      <div class="item"><dt>Armazenamento</dt><dd>SSD de <span class="preencher">[capacidade]</span><span class="porque">Com HD comum, as máquinas virtuais ficariam lentas.</span></dd></div>
+      <div class="item"><dt>Fonte</dt><dd><span class="preencher">[modelo e potência]</span></dd></div>
+      <div class="item"><dt>Refrigeração</dt><dd>Cooler do processador e duas fans de 120&nbsp;mm</dd></div>
+    </dl>
+  </section>
+
+  <section class="bloco" id="infra" aria-labelledby="infra-titulo">
+    <h2 id="infra-titulo">Infraestrutura</h2>
+    <p class="intro">O DrywallPC funciona como um pequeno data center: uma única máquina física rodando três máquinas virtuais, cada uma com uma função.</p>
+    <div class="planta">
+      <p class="planta-titulo">DrywallPC, a máquina física</p>
+      <p class="planta-sub">VirtualBox, com as máquinas virtuais numa rede interna isolada</p>
+      <div class="vms">
+        <div class="vm">
+          <h3>Windows Server</h3>
+          <p class="ram">4&nbsp;GB de RAM</p>
+          <p>Hospeda este site no IIS e tem o agente do Wazuh instalado.</p>
+        </div>
+        <div class="vm">
+          <h3>Wazuh</h3>
+          <p class="ram">6&nbsp;GB de RAM</p>
+          <p>Recebe os registros do servidor, detecta comportamentos suspeitos e mostra os alertas num painel.</p>
+        </div>
+        <div class="vm ataque">
+          <h3>Kali Linux</h3>
+          <p class="ram">2&nbsp;GB de RAM</p>
+          <p>Faz os ataques simulados contra o servidor, só dentro da rede interna.</p>
+        </div>
+      </div>
+    </div>
+    <p class="fora">Do lado de fora da parede, o ngrok publica o site na internet. O QR Code da placa de obra trouxe você até aqui por esse caminho.</p>
+  </section>
+
+  <section class="bloco" id="seguranca" aria-labelledby="seguranca-titulo">
+    <h2 id="seguranca-titulo">Segurança</h2>
+    <p class="intro">Durante a Expotech, um ataque é simulado contra o servidor da parede, e o sistema de monitoramento detecta tudo em tempo real.</p>
+    <ol class="passos">
+      <li><h3>Ataque</h3><p>O Kali faz uma varredura de portas e tentativas de login no Windows Server.</p></li>
+      <li><h3>Registro</h3><p>O agente do Wazuh no servidor registra cada tentativa e envia para análise.</p></li>
+      <li><h3>Alerta</h3><p>O painel do Wazuh mostra o alerta no monitor ao lado da parede.</p></li>
+    </ol>
+    <div class="foto seg-foto">Print de um alerta no painel do Wazuh</div>
+    <p class="aviso">Os ataques acontecem apenas dentro da rede isolada do projeto, sem alcançar a rede da faculdade nem a internet.</p>
+  </section>
+
+  <section class="bloco" id="equipe" aria-labelledby="equipe-titulo">
+    <h2 id="equipe-titulo">Equipe</h2>
+    <p class="intro">Cada integrante cuidou de uma frente, e todos conhecem o projeto inteiro.</p>
+    <ul class="equipe">
+      <li><span class="nome">Leonardo Almeida Reis</span><span class="frente">Estrutura da parede e site</span></li>
+      <li><span class="nome preencher">[nome]</span><span class="frente">Hardware e compras</span></li>
+      <li><span class="nome preencher">[nome]</span><span class="frente">Servidores e rede</span></li>
+      <li><span class="nome preencher">[nome]</span><span class="frente">Segurança</span></li>
+    </ul>
+    <p class="disciplinas">Disciplinas envolvidas: Computer Network, Cyber Security, Computer Architecture and Organization e Server and Data Center Administration.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="fita" aria-hidden="true"></div>
+  <div class="rodape">
+    <p class="frase">Construído por quatro alunos, servido por uma parede.</p>
+    <p>Projeto semestral da turma CDC2NA, UniFECAF. Expotech 2026.</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var alvo = document.getElementById('host');
+    if (!alvo) return;
+    var host = window.location.host;
+    alvo.textContent = host ? host : 'arquivo aberto no computador (ainda fora do servidor)';
+  })();
+</script>
+</body>
+</html>
